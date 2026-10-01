@@ -1,5 +1,6 @@
 data/
 venv/
+.venv/
 .DS_Store
 
 # Byte-compiled / optimized / DLL files
@@ -68,9 +69,6 @@ db.sqlite3-journal
 # Flask stuff:
 instance/
 .webassets-cache
-
-# Scrapy stuff:
-.scrapy
 
 # Sphinx documentation
 docs/_build/
@@ -222,3 +220,5 @@ __marimo__/
 .streamlit/secrets.toml
 
 Mine.ipynb
+
+data\raw\ecommerce_dataset_+1m.csv
