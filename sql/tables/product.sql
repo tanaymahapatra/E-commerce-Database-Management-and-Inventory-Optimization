@@ -7,8 +7,6 @@ CREATE TABLE product (
 
     sub_category VARCHAR(50),
 
-    brand VARCHAR(100),
-
     product_rating_avg DECIMAL(3,2)
         CHECK (product_rating_avg BETWEEN 0 AND 5),
 
