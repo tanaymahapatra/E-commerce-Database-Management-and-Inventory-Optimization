@@ -2,6 +2,10 @@ data/
 venv/
 .venv/
 .DS_Store
+.env
+.env.*
+!.env.example
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
