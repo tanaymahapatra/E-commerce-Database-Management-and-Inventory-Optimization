@@ -3,6 +3,8 @@ CREATE TABLE recommendation (
 
     warehouse_id INT,
 
+    forecast_date DATETIME,
+
     predicted_demand DECIMAL(12,2) NOT NULL
         CHECK (predicted_demand >= 0),
 
@@ -13,9 +15,9 @@ CREATE TABLE recommendation (
         CHECK (reorder_qty >= 0),
 
     status VARCHAR(30) NOT NULL
-        CHECK (status IN ('OK', 'REORDER_NOW', 'CRITICAL')),
+        CHECK (status IN ('OK', 'REORDER_NOW', 'CRITICAL','OVERSHOOT')),
 
-    PRIMARY KEY (product_id, warehouse_id),
+    PRIMARY KEY (product_id, warehouse_id,forecast_date),
 
     CONSTRAINT fk_recommendation_product
         FOREIGN KEY (product_id)
