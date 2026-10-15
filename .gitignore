@@ -223,8 +223,7 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
+# notebooks
 Mine.ipynb
-
-data\raw\ecommerce_dataset_+1m.csv
-
 test1.ipynb
+data\raw\ecommerce_dataset_+1m.csv
