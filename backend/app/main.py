@@ -7,13 +7,14 @@ from .database import get_db
 
 # Create FastAPI application
 app = FastAPI(title="E-Commerce Inventory Optimization API")
-from .routers import products, warehouse, inventory, orders, analytics
+from .routers import products, warehouse, inventory, orders, analytics, recommendations
 
 app.include_router(products.router)
 app.include_router(warehouse.router)
 app.include_router(inventory.router)
 app.include_router(orders.router)
 app.include_router(analytics.router)
+app.include_router(recommendations.router)
 
 
 @app.get("/")
