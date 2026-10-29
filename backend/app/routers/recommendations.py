@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 
 from ..database import get_db
 from ..schemas.recommendations import RecommendationListResponse
-
+from ..security import get_current_user, check_warehouse_access
 router = APIRouter(prefix="/recommendations", tags=["Recommendations"])
 
 
@@ -14,7 +14,10 @@ def get_recommendations(
     product_id: int = Query(..., ge=1),
     warehouse_id: int = Query(..., ge=1),
     db: Session = Depends(get_db),
+    user: dict = Depends(get_current_user)
 ):
+    check_warehouse_access(db, user, warehouse_id)
+    
 
     query = text("""
         SELECT
