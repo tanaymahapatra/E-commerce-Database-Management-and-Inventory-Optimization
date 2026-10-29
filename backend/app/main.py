@@ -6,9 +6,20 @@ from fastapi import Depends
 from .security import require_admin
 from .routers import auth
 from .database import get_db
+from contextlib import asynccontextmanager
+
 
 # Create FastAPI application
-app = FastAPI(title="E-Commerce Inventory Optimization API")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    start_scheduler()
+    try:
+        yield
+    finally:
+        stop_scheduler()
+
+
+app = FastAPI(title="E-Commerce Inventory Optimization API", lifespan=lifespan)
 
 from .routers import (
     products,
@@ -18,6 +29,11 @@ from .routers import (
     analytics,
     recommendations,
     stock_demand,
+    scheduler,
+)
+from .services.scheduler_service import (
+    start_scheduler,
+    stop_scheduler,
 )
 
 # Authentication endpoints
@@ -37,6 +53,7 @@ app.include_router(orders.router, dependencies=[Depends(require_admin)])
 
 app.include_router(analytics.router, dependencies=[Depends(require_admin)])
 app.include_router(stock_demand.router)
+app.include_router(scheduler.router, dependencies=[Depends(require_admin)])
 
 
 @app.get("/")
