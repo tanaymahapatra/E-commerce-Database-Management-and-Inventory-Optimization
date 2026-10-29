@@ -64,7 +64,7 @@ with st.form("recommendation_form"):
     col1, col2 = st.columns(2)
 
     with col1:
-        product_id = st.number_input("Product ID", min_value=1, step=1, value=1)
+        product_id = st.number_input("Product ID", min_value=1, max_value=48, step=1, value=1)
 
     with col2:
         warehouse_id = st.number_input(
@@ -98,6 +98,11 @@ if submitted:
         data = response.json()
 
         recommendations = data["recommendations"]
+
+        # Clean any T00:00:00 timestamp format to pure date
+        for r in recommendations:
+            if "forecast_date" in r and r["forecast_date"]:
+                r["forecast_date"] = str(r["forecast_date"]).split("T")[0]
 
         # 3. Display results
         if not recommendations:

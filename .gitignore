@@ -5,6 +5,7 @@ venv/
 .env
 .env.*
 !.env.example
+/backup
 
 
 # Byte-compiled / optimized / DLL files
