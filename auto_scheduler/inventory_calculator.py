@@ -66,16 +66,16 @@ def compute_inventory_metrics(forecast_df: pd.DataFrame) -> pd.DataFrame:
 
     grp = df.groupby(["product_id", "warehouse_id"])
 
-    # ── Safety stock ─────────────────────────────────────────────────────────
+    # Safety stock
     df["safety_stock"] = (
         np.ceil(Z_SCORE * df["rmse"] * np.sqrt(LEAD_TIME_WEEKS))
         .astype(int)
     )
 
-    # ── Position within the 4-week forecast window ────────────────────────────
+    # Position within the 4-week forecast window 
     df["_wk"] = grp.cumcount()
 
-    # ── Demand during lead time (all weeks, since lead = forecast horizon) ────
+    # Demand during lead time (all weeks, since lead = forecast horizon)
     df["demand_LT"] = (
         df["predicted_demand"]
         .where(df["_wk"] < LEAD_TIME_WEEKS, other=0)
@@ -83,10 +83,10 @@ def compute_inventory_metrics(forecast_df: pd.DataFrame) -> pd.DataFrame:
         .transform("sum")
     )
 
-    # ── Total predicted demand across the full 4-week window ─────────────────
+    # Total predicted demand across the full 4-week window
     df["total_demand"] = grp["predicted_demand"].transform("sum")
 
-    # ── Reorder quantity ─────────────────────────────────────────────────────
+    # Reorder quantity
     df["reorder_qty"] = (
         np.ceil(
             df["demand_LT"] + df["safety_stock"] - df["current_stock"]
@@ -95,7 +95,7 @@ def compute_inventory_metrics(forecast_df: pd.DataFrame) -> pd.DataFrame:
         .astype(int)
     )
 
-    # ── Inventory status ─────────────────────────────────────────────────────
+    # Inventory status
     reorder_point = df["demand_LT"] + df["safety_stock"]
 
     conditions = [
@@ -107,12 +107,12 @@ def compute_inventory_metrics(forecast_df: pd.DataFrame) -> pd.DataFrame:
 
     df["status"] = np.select(conditions, choices, default="OK")
 
-    # ── Round predicted_demand to integer (non-negative) ─────────────────────
+    # Round predicted_demand to integer (non-negative)
     df["predicted_demand"] = (
         np.maximum(0, df["predicted_demand"]).round().astype(int)
     )
 
-    # ── Clean up helper columns ───────────────────────────────────────────────
+    # Clean up helper columns
     final_cols = [
         "product_id", "warehouse_id", "forecast_date",
         "predicted_demand", "safety_stock", "reorder_qty", "status",

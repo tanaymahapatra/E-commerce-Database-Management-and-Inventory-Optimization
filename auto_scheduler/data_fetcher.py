@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 
 # Path to the SQL file (relative to this file's location)
 _SQL_FILE = os.path.join(
-    os.path.dirname(__file__), "sql", "fetch_training_data.sql"
+    os.path.dirname(__file__), "..", "sql", "queries", "fetch_training_data.sql"
 )
 
 

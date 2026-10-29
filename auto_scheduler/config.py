@@ -8,21 +8,16 @@ All tuneable constants live here — change them once, they apply everywhere.
 import os
 from dotenv import load_dotenv
 
-# ── Load .env from the project root (one level up from this folder) ──────────
 load_dotenv(os.path.join(os.path.dirname(__file__), "..", ".env"))
 
-# ─────────────────────────────────────────────────────────────────────────────
 # DATABASE
-# ─────────────────────────────────────────────────────────────────────────────
 DB_HOST     = os.getenv("DB_HOST", "localhost")
 DB_PORT     = int(os.getenv("DB_PORT", 3306))
 DB_USER     = os.getenv("DB_USER", "root")
 DB_PASSWORD = os.getenv("DB_PASSWORD", "")
 DB_NAME     = os.getenv("DB_NAME", "ITDETAILS")
 
-# ─────────────────────────────────────────────────────────────────────────────
 # PIPELINE & EVALUATION WINDOWS
-# ─────────────────────────────────────────────────────────────────────────────
 
 # Total weeks of historical data to fetch (52 = 1 full year).
 TRAINING_WINDOW_WEEKS: int = 52
@@ -34,9 +29,7 @@ TEST_WINDOW_WEEKS: int = 8
 # Production forecast horizon written to MySQL recommendation table (4 weeks).
 FORECAST_STEPS: int = 4
 
-# ─────────────────────────────────────────────────────────────────────────────
 # INVENTORY FORMULA CONSTANTS
-# ─────────────────────────────────────────────────────────────────────────────
 
 # Z-score for target service level (1.28 = 90%, 1.65 = 95%, 2.33 = 99%).
 Z_SCORE: float = 1.65
@@ -47,11 +40,9 @@ LEAD_TIME_WEEKS: int = FORECAST_STEPS
 # A product is flagged OVERSHOOT if stock exceeds this multiple of (demand + safety_stock).
 OVERSHOOT_FACTOR: float = 2.0
 
-# ─────────────────────────────────────────────────────────────────────────────
 # LIGHTGBM & OPTUNA CONFIGURATION
-# ─────────────────────────────────────────────────────────────────────────────
 
-# ── OPTUNA TOGGLE TRIGGER ────────────────────────────────────────────────────
+# OPTUNA TOGGLE TRIGGER 
 # Set to True  -> Run Optuna hyperparameter tuning for each series (more thorough, takes longer)
 # Set to False -> Skip Optuna and use fixed LGBM_PARAMS below directly (much faster)
 USE_OPTUNA: bool = False
@@ -85,9 +76,7 @@ LAG_FEATURES: list[str] = ["lag_1", "lag_2", "lag_3", "lag_4"]
 # Minimum number of weeks required to train LightGBM.
 MIN_SERIES_LENGTH: int = 12
 
-# ─────────────────────────────────────────────────────────────────────────────
 # SCHEDULER TIMING
-# ─────────────────────────────────────────────────────────────────────────────
 
 # APScheduler cron fields: every Sunday at 02:00 local time.
 CRON_DAY_OF_WEEK: str = "sun"
