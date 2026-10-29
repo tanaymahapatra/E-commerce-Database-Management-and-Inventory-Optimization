@@ -1,11 +1,11 @@
-from datetime import datetime
+from datetime import date
 from typing import Literal
 
 from pydantic import BaseModel, ConfigDict
 
 
 class RecommendationResponse(BaseModel):
-    forecast_date: datetime
+    forecast_date: date
     predicted_demand: float
     safety_stock: int
     reorder_qty: int
@@ -26,7 +26,7 @@ class RecommendationListResponse(BaseModel):
                 "total_records": 1,
                 "recommendations": [
                     {
-                        "forecast_date": "2026-10-17T00:00:00",
+                        "forecast_date": "2026-10-17",
                         "predicted_demand": 125.50,
                         "safety_stock": 30,
                         "reorder_qty": 80,

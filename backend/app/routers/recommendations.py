@@ -1,12 +1,16 @@
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy import text
 from sqlalchemy.orm import Session
-
+from pathlib import Path
 from ..database import get_db
 from ..schemas.recommendations import RecommendationListResponse
 
 router = APIRouter(prefix="/recommendations", tags=["Recommendations"])
 
+SQL_FILE = (Path(__file__).resolve().parents[3] /"sql"/"queries"/"get_recommendation.sql")
+
+with SQL_FILE.open("r", encoding="utf-8") as file:
+    GET_RECOMMENDATION_QUERY = text(file.read())
 
 # 1. Get recommendations for a product and warehouse
 @router.get("", response_model=RecommendationListResponse)
@@ -16,21 +20,8 @@ def get_recommendations(
     db: Session = Depends(get_db),
 ):
 
-    query = text("""
-        SELECT
-            forecast_date,
-            predicted_demand,
-            safety_stock,
-            reorder_qty,
-            status
-        FROM recommendation
-        WHERE product_id = :product_id
-          AND warehouse_id = :warehouse_id
-        ORDER BY forecast_date DESC
-    """)
-
     result = (
-        db.execute(query, {"product_id": product_id, "warehouse_id": warehouse_id})
+        db.execute(GET_RECOMMENDATION_QUERY, {"product_id": product_id, "warehouse_id": warehouse_id})
         .mappings()
         .all()
     )
