@@ -125,7 +125,7 @@ def check_warehouse_access(
     if user["role"] == "admin":
         return
 
-    if user["role"] not in ("manager", "analyst"):
+    if user["role"] !="manager":
         raise HTTPException(
             status_code=403,
             detail="Role not permitted"

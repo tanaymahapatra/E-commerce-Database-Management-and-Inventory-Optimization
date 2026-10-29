@@ -12,12 +12,12 @@ def main():
     # 1. Get user details
     username = input("Username: ").strip()
 
-    role = input("Role (admin/manager/analyst): ").strip().lower()
+    role = input("Role (admin/manager): ").strip().lower()
 
     if not username:
         raise ValueError("Username cannot be empty")
 
-    if role not in ("admin", "manager", "analyst"):
+    if role not in ("admin", "manager"):
         raise ValueError("Invalid role")
 
     # 2. Assign user ID

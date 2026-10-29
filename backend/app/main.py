@@ -9,7 +9,16 @@ from .database import get_db
 
 # Create FastAPI application
 app = FastAPI(title="E-Commerce Inventory Optimization API")
-from .routers import products, warehouse, inventory, orders, analytics, recommendations
+
+from .routers import (
+    products,
+    warehouse,
+    inventory,
+    orders,
+    analytics,
+    recommendations,
+    stock_demand,
+)
 
 # Authentication endpoints
 app.include_router(auth.router)
@@ -27,6 +36,7 @@ app.include_router(inventory.router, dependencies=[Depends(require_admin)])
 app.include_router(orders.router, dependencies=[Depends(require_admin)])
 
 app.include_router(analytics.router, dependencies=[Depends(require_admin)])
+app.include_router(stock_demand.router)
 
 
 @app.get("/")

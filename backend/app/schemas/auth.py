@@ -10,5 +10,5 @@ class TokenResponse(BaseModel):
 class UserResponse(BaseModel):
     user_id: int
     username: str
-    role: Literal["admin", "manager", "analyst"]
+    role: Literal["admin", "manager"]
     is_active: bool
