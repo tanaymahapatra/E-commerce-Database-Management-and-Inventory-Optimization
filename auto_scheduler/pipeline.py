@@ -85,7 +85,7 @@ def run_weekly_pipeline(
     logger.info("Pipeline START  run_date=%s  triggered_by=%s", run_date.date(), triggered_by)
     logger.info("=" * 60)
 
-    # ── Step 2: Open run log ─────────────────────────────────────────────────
+    # Step 2: Open run log 
     run_id = open_run(run_date, triggered_by=triggered_by)
 
     model_used        = "N/A"
@@ -95,11 +95,11 @@ def run_weekly_pipeline(
     records_written   = 0
 
     try:
-        # ── Step 3: Fetch last 52 weeks of available data ────────────────────
+        # Step 3: Fetch last 52 weeks of available data
         logger.info("Step 3: Fetching last %d weeks of available data from MySQL...", TRAINING_WINDOW_WEEKS)
         raw_df = fetch_training_data()
 
-        # ── Step 4: Split into Train (44 weeks) and Test (8 weeks) ───────────
+        # Step 4: Split into Train (44 weeks) and Test (8 weeks)
         logger.info("Step 4: Splitting into 44 weeks train and 8 weeks hold-out test...")
         (
             weekly_orders,
@@ -117,7 +117,7 @@ def run_weekly_pipeline(
         test_steps = len(test_date_range)
         logger.info("Test split size: %d weeks. Evaluating both models...", test_steps)
 
-        # ── Step 5: Evaluate SES on Test Split ───────────────────────────────
+        # Step 5: Evaluate SES on Test Split
         logger.info("Step 5: Training SES on train split and forecasting %d test weeks...", test_steps)
         ses_test_preds = evaluate_ses(
             weekly_orders=weekly_orders,
@@ -125,7 +125,7 @@ def run_weekly_pipeline(
             test_steps=test_steps,
         )
 
-        # ── Step 6: Evaluate LightGBM on Test Split ──────────────────────────
+        # Step 6: Evaluate LightGBM on Test Split
         logger.info("Step 6: Training LightGBM on train split and forecasting %d test weeks...", test_steps)
         lgbm_test_preds = evaluate_lgbm(
             weekly_orders=weekly_orders,
@@ -133,7 +133,7 @@ def run_weekly_pipeline(
             test_steps=test_steps,
         )
 
-        # ── Step 7: Compare Real Test Accuracy & Pick Winner ─────────────────
+        # Step 7: Compare Real Test Accuracy & Pick Winner
         logger.info("Step 7: Comparing real test accuracy against ground truth...")
         model_used, winner_metrics = compare_and_select_winner(
             test_actuals=test_actuals,
@@ -145,7 +145,7 @@ def run_weekly_pipeline(
         rmse              = winner_metrics["rmse"]
         forecast_accuracy = winner_metrics["accuracy"]
 
-        # ── Step 8: Final 4-Week Production Forecast ─────────────────────────
+        # Step 8: Final 4-Week Production Forecast
         logger.info("Step 8: Training winning model (%s) on full dataset for next 4 weeks...", model_used)
         if model_used == "LightGBM":
             raw_forecast_df = forecast_lgbm(
@@ -174,7 +174,7 @@ def run_weekly_pipeline(
                 test_rmse=rmse,
             )
 
-        # ── Step 9: Date Anchoring to TODAY's upcoming 4 weeks ───────────────
+        # Step 9: Date Anchoring to TODAY's upcoming 4 weeks
         logger.info("Step 9: Anchoring 4 forecast steps to upcoming Sundays from TODAY (%s)...", run_date.date())
         anchored_df = anchor_dates(
             forecast_df=raw_forecast_df,
@@ -182,15 +182,15 @@ def run_weekly_pipeline(
             forecast_steps=FORECAST_STEPS,
         )
 
-        # ── Step 10: Inventory Metrics (Safety stock, Reorder qty, Status) ───
+        # Step 10: Inventory Metrics (Safety stock, Reorder qty, Status)
         logger.info("Step 10: Computing safety_stock, reorder_qty, status...")
         final_df = compute_inventory_metrics(anchored_df)
 
-        # ── Step 11: Write to MySQL recommendation table ─────────────────────
+        # Step 11: Write to MySQL recommendation table 
         logger.info("Step 11: Writing recommendations to database...")
         records_written = write_predictions(final_df, run_date=run_date)
 
-        # ── Step 12: Close Run Log ───────────────────────────────────────────
+        # Step 12: Close Run Log
         close_run(
             run_id,
             model_used=model_used,
@@ -246,7 +246,7 @@ def run_weekly_pipeline(
         }
 
 
-# ── Allow direct execution ────────────────────────────────────────────────────
+# Allow direct execution
 if __name__ == "__main__":
     import json
     logging.basicConfig(

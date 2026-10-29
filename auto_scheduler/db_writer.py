@@ -75,7 +75,7 @@ def write_predictions(
         logger.warning("write_predictions called with an empty DataFrame — nothing to write.")
         return 0
 
-    # ── Prepare the upload DataFrame with clean date format (YYYY-MM-DD) ─────
+    # Prepare the upload DataFrame with clean date format (YYYY-MM-DD)
     upload_df = final_df.copy()
     upload_df["forecast_date"]    = pd.to_datetime(upload_df["forecast_date"]).dt.strftime("%Y-%m-%d")
     upload_df["predicted_demand"] = upload_df["predicted_demand"].astype(int)

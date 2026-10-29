@@ -50,7 +50,7 @@ def build_weekly_series(
         empty_idx = pd.DatetimeIndex([])
         return empty_df, empty_df, empty_idx, empty_idx, empty_idx, empty_df
 
-    # ── Normalize dates to midnight so all timestamps match W-SUN perfectly ──
+    # Normalize dates to midnight so all timestamps match W-SUN perfectly 
     max_order_date = pd.to_datetime(raw_df["order_date"].max()).normalize()
     if cutoff_date is None or pd.to_datetime(cutoff_date).normalize() > max_order_date:
         window_end = max_order_date
@@ -70,7 +70,7 @@ def build_weekly_series(
         empty_idx = pd.DatetimeIndex([])
         return empty_df, empty_df, empty_idx, empty_idx, empty_idx, empty_df
 
-    # ── Latest stock snapshot per product × warehouse ─────────────────────────
+    # Latest stock snapshot per product × warehouse 
     latest_stock = (
         df.sort_values("order_date")
           .groupby(["product_id", "warehouse_id"])
@@ -79,7 +79,7 @@ def build_weekly_series(
           .reset_index(drop=True)
     )
 
-    # ── Weekly demand aggregation (W-SUN at midnight) ─────────────────────────
+    # Weekly demand aggregation (W-SUN at midnight) 
     weekly_orders = (
         df.groupby(
             ["product_id", "warehouse_id",
@@ -94,19 +94,19 @@ def build_weekly_series(
     # Ensure week_end_date is strictly midnight for reindex matching
     weekly_orders["week_end_date"] = pd.to_datetime(weekly_orders["week_end_date"]).dt.normalize()
 
-    # ── Full date range (52 weeks, normalized to midnight) ───────────────────
+    # Full date range (52 weeks, normalized to midnight)
     full_date_range = pd.date_range(
         start=window_start,
         end=window_end,
         freq="W-SUN",
     ).normalize()
 
-    # ── Split into Train (first ~44 weeks) and Test (last 8 weeks) ───────────
+    # Split into Train (first ~44 weeks) and Test (last 8 weeks)
     train_weeks = max(4, len(full_date_range) - test_window_weeks)
     train_date_range = full_date_range[:train_weeks]
     test_date_range = full_date_range[train_weeks:]
 
-    # ── Build ground-truth test actuals table ────────────────────────────────
+    # Build ground-truth test actuals table 
     test_actuals_list = []
     for (p_id, w_id), df_group in weekly_orders.groupby(["product_id", "warehouse_id"]):
         series = (

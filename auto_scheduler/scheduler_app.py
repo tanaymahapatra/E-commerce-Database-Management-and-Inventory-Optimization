@@ -46,11 +46,9 @@ from .pipeline import run_weekly_pipeline
 
 logger = logging.getLogger(__name__)
 
-# ── APScheduler instance ──────────────────────────────────────────────────────
 scheduler = BackgroundScheduler()
 
 
-# ── Lifespan: start/stop scheduler alongside FastAPI ─────────────────────────
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logger.info(
@@ -86,9 +84,7 @@ app = FastAPI(
 )
 
 
-# ─────────────────────────────────────────────────────────────────────────────
 # ENDPOINTS
-# ─────────────────────────────────────────────────────────────────────────────
 
 @app.get("/scheduler/status", summary="Last run summary")
 def get_status():

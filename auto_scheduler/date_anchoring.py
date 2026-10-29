@@ -11,7 +11,6 @@ import pandas as pd
 
 logger = logging.getLogger(__name__)
 
-
 def anchor_dates(
     forecast_df: pd.DataFrame,
     run_date:    pd.Timestamp,
