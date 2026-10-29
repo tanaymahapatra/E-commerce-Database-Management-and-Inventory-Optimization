@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from pathlib import Path
 from ..database import get_db
 from ..schemas.recommendations import RecommendationListResponse
-
+from ..security import get_current_user, check_warehouse_access
 router = APIRouter(prefix="/recommendations", tags=["Recommendations"])
 
 SQL_FILE = (Path(__file__).resolve().parents[3] /"sql"/"queries"/"get_recommendation.sql")
@@ -18,7 +18,10 @@ def get_recommendations(
     product_id: int = Query(..., ge=1),
     warehouse_id: int = Query(..., ge=1),
     db: Session = Depends(get_db),
+    user: dict = Depends(get_current_user)
 ):
+    check_warehouse_access(db, user, warehouse_id)
+    
 
     result = (
         db.execute(GET_RECOMMENDATION_QUERY, {"product_id": product_id, "warehouse_id": warehouse_id})
